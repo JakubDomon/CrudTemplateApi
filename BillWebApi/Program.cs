@@ -1,22 +1,27 @@
-using BillWebApi.Database.DatabaseConfig;
+using BillWebApi.Converters.SpecificConverters.Security;
+using BillWebApi.Converters.SpecificConverters.User;
+using DataAccessLayer.DbContexts;
+using DataAccessLayer.Repositiories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Databases
-builder.Services.AddDbContext<MSSQLContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_Mikrus")));
+// Database contexts
+builder.Services.AddDbContext<BillAppContext>();
+
+// Repository
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+// Converters
+builder.Services.AddTransient<UserConverter>();
+builder.Services.AddTransient<SecurityConverter>();
 
 // JWT Bearer
 builder.Services.AddAuthentication(options =>
@@ -30,16 +35,14 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] 
+            ?? throw new ArgumentException("Jwt key does not exist in configuration file"))),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
     };
 });
-
-// AutoMapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddAuthorization();
 
@@ -54,7 +57,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();
