@@ -117,8 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DatabaseError" xml:space="preserve">
+    <value>Błąd bazy danych</value>
+  </data>
+  <data name="GroupUserIdRequired" xml:space="preserve">
+    <value>Użytkownik {0} nie posiada ID</value>
+  </data>
+  <data name="ObjectEveryPropertyNull" xml:space="preserve">
+    <value>Obiekt nie posiada żadnych danych</value>
+  </data>
+  <data name="ObjectIdRequired" xml:space="preserve">
+    <value>Obiekt nie posiada ID</value>
+  </data>
+  <data name="ServerError" xml:space="preserve">
+    <value>Błąd serwera</value>
+  </data>
   <data name="UserEmailRequired" xml:space="preserve">
     <value>Email użytkownika wymagany</value>
+  </data>
+  <data name="UserIdRequired" xml:space="preserve">
+    <value>Id użytkownika wymagane</value>
   </data>
   <data name="UserLoginAlreadyExists" xml:space="preserve">
     <value>Użytkownik o podanych danych już istnieje</value>
@@ -129,6 +147,12 @@
   <data name="UserLoginRequired" xml:space="preserve">
     <value>Login użytkownika wymagany</value>
   </data>
+  <data name="UserLoginTooLong" xml:space="preserve">
+    <value>Zbyt długi login użytkownika - maksymalnie 30 znaków</value>
+  </data>
+  <data name="UserLoginTooShort" xml:space="preserve">
+    <value>Zbyt krótki login użytkownika - minimalnie 3 znaki</value>
+  </data>
   <data name="UserNameRequired" xml:space="preserve">
     <value>Imię użytkownika wymagane</value>
   </data>
@@ -138,6 +162,9 @@
   <data name="UserNameTooShort" xml:space="preserve">
     <value>Zbyt krótkie imię użytkownika</value>
   </data>
+  <data name="UserNotExists" xml:space="preserve">
+    <value>Użytkownik o takim ID nie istnieje</value>
+  </data>
   <data name="UserPasswordRequired" xml:space="preserve">
     <value>Hasło użytkownika wymagane</value>
   </data>
@@ -146,6 +173,9 @@
   </data>
   <data name="UserPasswordTooShort" xml:space="preserve">
     <value>Zbyt krótkie hasło użytkownika</value>
+  </data>
+  <data name="UsersRequired" xml:space="preserve">
+    <value>Brak danych o użytkownikach w grupie</value>
   </data>
   <data name="UserSurnameRequired" xml:space="preserve">
     <value>Nazwisko użytkownika wymagane</value>

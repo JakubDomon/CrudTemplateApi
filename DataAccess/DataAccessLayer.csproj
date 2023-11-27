@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Models\User\" />
+    <Folder Include="Models\Users\" />
   </ItemGroup>
 
   <ItemGroup>

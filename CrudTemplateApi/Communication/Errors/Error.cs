@@ -1,4 +1,4 @@
-﻿namespace BillWebApi.Communication.Errors
+﻿namespace CrudTemplateApi.Communication.Errors
 {
     public class Error
     {

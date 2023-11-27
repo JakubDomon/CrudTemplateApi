@@ -61,11 +61,65 @@ namespace BusinessLayer.BusinessObjects.Errors.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Błąd bazy danych.
+        /// </summary>
+        internal static string DatabaseError {
+            get {
+                return ResourceManager.GetString("DatabaseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {0} nie posiada ID.
+        /// </summary>
+        internal static string GroupUserIdRequired {
+            get {
+                return ResourceManager.GetString("GroupUserIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obiekt nie posiada żadnych danych.
+        /// </summary>
+        internal static string ObjectEveryPropertyNull {
+            get {
+                return ResourceManager.GetString("ObjectEveryPropertyNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obiekt nie posiada ID.
+        /// </summary>
+        internal static string ObjectIdRequired {
+            get {
+                return ResourceManager.GetString("ObjectIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Błąd serwera.
+        /// </summary>
+        internal static string ServerError {
+            get {
+                return ResourceManager.GetString("ServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email użytkownika wymagany.
         /// </summary>
         internal static string UserEmailRequired {
             get {
                 return ResourceManager.GetString("UserEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id użytkownika wymagane.
+        /// </summary>
+        internal static string UserIdRequired {
+            get {
+                return ResourceManager.GetString("UserIdRequired", resourceCulture);
             }
         }
         
@@ -97,6 +151,24 @@ namespace BusinessLayer.BusinessObjects.Errors.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zbyt długi login użytkownika - maksymalnie 30 znaków.
+        /// </summary>
+        internal static string UserLoginTooLong {
+            get {
+                return ResourceManager.GetString("UserLoginTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zbyt krótki login użytkownika - minimalnie 3 znaki.
+        /// </summary>
+        internal static string UserLoginTooShort {
+            get {
+                return ResourceManager.GetString("UserLoginTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Imię użytkownika wymagane.
         /// </summary>
         internal static string UserNameRequired {
@@ -124,6 +196,15 @@ namespace BusinessLayer.BusinessObjects.Errors.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Użytkownik o takim ID nie istnieje.
+        /// </summary>
+        internal static string UserNotExists {
+            get {
+                return ResourceManager.GetString("UserNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hasło użytkownika wymagane.
         /// </summary>
         internal static string UserPasswordRequired {
@@ -147,6 +228,15 @@ namespace BusinessLayer.BusinessObjects.Errors.Resources {
         internal static string UserPasswordTooShort {
             get {
                 return ResourceManager.GetString("UserPasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brak danych o użytkownikach w grupie.
+        /// </summary>
+        internal static string UsersRequired {
+            get {
+                return ResourceManager.GetString("UsersRequired", resourceCulture);
             }
         }
         

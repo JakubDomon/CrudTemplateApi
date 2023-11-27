@@ -2,33 +2,53 @@
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace DataAccessLayer.Repositiories
 {
-    public class Repository<Entity> : IRepository<Entity>
+    public class Repository<Entity, Database> : IRepository<Entity>
         where Entity : EntityBase
+        where Database : DbContextBase
     {
-        private readonly DbContextBase _context;
-        private readonly DbSet<Entity> _table;
+        private readonly Database Context;
+        private readonly DbSet<Entity> Table;
 
-        public Repository(DbContextBase dbContext)
+        public Repository(Database dbContext)
         {
-            _context = dbContext;
-            _table = dbContext.Set<Entity>();
+            Context = dbContext;
+            Table = dbContext.Set<Entity>();
         }
 
-        public void Add(Entity entity) => _table.Add(entity);
+        public void Add(Entity entity)
+        {
+            entity.AddDate = DateTime.Now;
+            entity.UpdateDate = DateTime.Now;
+            Table.Add(entity);
+        }
 
-        public async Task<IEnumerable<Entity>> GetManyByConditionAsync(Expression<Func<Entity, bool>> expression) => await _table.Where(expression).ToListAsync();
+        public void Update(Entity entity)
+        {
+            Entity existingEntity = Table.FirstOrDefault(x => x.Id == entity.Id) ?? throw new ArgumentException($"Entity with {entity.Id} not exists");
+            existingEntity.UpdateDate = DateTime.Now;
 
-        public async Task<IEnumerable<Entity>> GetAllAsync() => await _table.OrderBy(x => x.Id).ToListAsync();
+            PropertyInfo[] newEntityProperties = entity.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] oldEntityProperties = existingEntity.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        public async Task<Entity?> GetByIdAsync(int id) => await _table.SingleOrDefaultAsync(x => x.Id == id);
+            foreach(PropertyInfo newProp in newEntityProperties)
+            {
+                if(newProp.GetValue(entity) != null && !newProp.Name.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    var oldProp = oldEntityProperties.First(x => x.Name == newProp.Name && x.PropertyType == newProp.PropertyType);
+                    oldProp.SetValue(existingEntity, newProp.GetValue(entity));
+                }
+            }
+            Table.Update(existingEntity);
+        }
 
-        public async Task<bool> SaveChangesAsync() => await _context.SaveChangesAsync().ConfigureAwait(false) > 0;
-
-        public void Update(Entity entity) => _table.Update(entity);
-
-        public void Delete(Entity entity) => _table.Remove(entity);
+        public IEnumerable<Entity> GetManyByCondition(Expression<Func<Entity, bool>> expression) => Table.Where(expression).ToList();
+        public IEnumerable<Entity> GetAll() => Table.OrderBy(x => x.Id).ToList();
+        public Entity? GetById(int id) => Table.SingleOrDefault(x => x.Id == id);
+        public void Delete(Entity entity) => Table.Remove(Table.Find(entity.Id) ?? throw new ArgumentException($"Entity with ID: {entity.Id} not found in database"));
+        public bool SaveChanges() => Context.SaveChanges() > 0;
     }
 }

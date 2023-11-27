@@ -1,43 +1,70 @@
-﻿using BillWebApi.Communication;
-using BillWebApi.Communication.User;
-using BillWebApi.Converters.SpecificConverters.User;
-using Bo = BusinessLayer.BusinessObjects;
-using DataAccessLayer.DbContexts;
-using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.BusinessLogic.SpecificBusinessLogics.UserManagement;
+﻿using Bo = BusinessLayer.BusinessObjects.BusinessObjects;
+using Gui = CrudTemplateApi.Communication.GuiObjects;
 using Microsoft.AspNetCore.Authorization;
-using BusinessLayer.BusinessObjects.Communication.Objects.User.Add;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using CrudTemplateApi.Communication;
+using BillWebApi.Communication.Enums;
+using CrudTemplateApi.Communication.GuiObjects;
+using BusinessLayer.Service.AuthService;
 
-namespace BillWebApi.Controllers
+namespace CrudTemplateApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly BillAppContext _context;
-        private UserConverter _converter;
+        private ISecurityService SecurityService;
+        private IMapper Mapper { get; set; }
 
-        public UserController(BillAppContext context, UserConverter converter)
+        public UserController(ISecurityService securityService, IMapper mapper)
         {
-            _context = context;
-            _converter = converter;
+            SecurityService = securityService;
+            Mapper = mapper;
         }
 
         [AllowAnonymous]
+        [Route("register")]
         [HttpPost]
-        public ErrorableResponse<GuiUserAddResponse> CreateUser(GuiUserAddRequest request)
+        public IResult RegisterUser(Gui.Users.User user)
         {
-            BlAddUserRequest blRequest = _converter.ConvertUserAddGuiRequest(request);
-            Bo.Communication.ErrorableResponse<BlAddUserResponse> blResponse = new UserAddBusinessLogic(_context).ExecuteLogic(blRequest);
+            ErrorableResponse<Gui.Users.User> response = Mapper.Map<ErrorableResponse<Gui.Users.User>>(SecurityService.RegisterUser(Mapper.Map<Bo.Users.User>(user)));
+            return CreateHttpResponse(response);
+        }
 
-            var guiResponse = new ErrorableResponse<GuiUserAddResponse>()
+        [AllowAnonymous]
+        [Route("login")]
+        [HttpPost]
+        public IResult LoginUser(Gui.Security.UserAuthentication loginRequest)
+        {
+            ErrorableResponse<Gui.Security.AuthenticatedUser> response = Mapper.Map<ErrorableResponse<Gui.Security.AuthenticatedUser>>(SecurityService.LoginUser(Mapper.Map<Bo.Security.Login.LoginRequest>(loginRequest)));
+            return CreateHttpResponse(response);
+        }
+
+        [HttpPut]
+        public IResult UpdateUser(Gui.Users.User user)
+        {
+            ErrorableResponse<Gui.Users.User> response = Mapper.Map<ErrorableResponse<Gui.Users.User>>(SecurityService.UpdateUser(Mapper.Map<Bo.Users.User>(user)));
+            return CreateHttpResponse(response);
+        }
+
+        [HttpDelete]
+        public IResult DeleteUser(Gui.Users.User user)
+        {
+            ErrorableResponse<Gui.Users.User> response = Mapper.Map<ErrorableResponse<Gui.Users.User>>(SecurityService.DeleteUser(Mapper.Map<Bo.Users.User>(user)));
+            return CreateHttpResponse(response);
+        }
+
+
+        private IResult CreateHttpResponse<T>(ErrorableResponse<T> response)
+            where T: IGuiModel
+        {
+            return response.Status switch
             {
-                Errors = _converter.ConvertErrors(blResponse.Errors),
-                Status = (Communication.Enums.ResponseStatus)blResponse.Status,
-                Response = _converter.ConvertUserAddBlResponse(blResponse.BlResponse)
+                ResponseStatus.Success => Results.Ok(response),
+                ResponseStatus.Failure => Results.StatusCode(500),
+                _ => Results.StatusCode(500)
             };
-
-            return guiResponse;
         }
     }
 }

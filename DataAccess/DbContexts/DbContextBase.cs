@@ -5,21 +5,18 @@ namespace DataAccessLayer.DbContexts
 {
     public abstract class DbContextBase : DbContext
     {
-        IConfigurationRoot ConfigurationRoot { get; }
+        IConfiguration Configuration { get; }
         
-        public DbContextBase()
+        public DbContextBase(IConfiguration configuration)
         {
-            ConfigurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .Build();
+            Configuration = configuration;
         }
 
         protected string GetConnectionString(string databaseName)
         {
             if(databaseName == null) throw new ArgumentNullException(nameof(databaseName));
 
-            return ConfigurationRoot.GetConnectionString(databaseName)
+            return Configuration.GetConnectionString(databaseName)
                 ?? throw new ArgumentException($"{databaseName} connection not found in configuration file");
         }
     }

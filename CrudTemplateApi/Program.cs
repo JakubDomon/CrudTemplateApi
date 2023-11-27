@@ -1,10 +1,8 @@
-using BillWebApi.Converters.SpecificConverters.Security;
-using BillWebApi.Converters.SpecificConverters.User;
-using DataAccessLayer.DbContexts;
-using DataAccessLayer.Repositiories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BusinessLayer.DependencyInjection;
+using DataAccessLayer.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,15 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Database contexts
-builder.Services.AddDbContext<BillAppContext>();
-
-// Repository
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
 // Converters
-builder.Services.AddTransient<UserConverter>();
-builder.Services.AddTransient<SecurityConverter>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// Data Access Layer services
+DalServiceConfiguration.ConfigureServices(builder.Services);
+
+// Business Logic Layer services
+BllServiceConfiguration.ConfigureServices(builder.Services);
 
 // JWT Bearer
 builder.Services.AddAuthentication(options =>

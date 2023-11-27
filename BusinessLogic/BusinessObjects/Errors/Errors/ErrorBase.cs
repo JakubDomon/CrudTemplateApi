@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.BusinessObjects.Errors.Resources;
-using BusinessLayer.Helpers;
+using BusinessLayer.Helpers.Resources;
 
 namespace BusinessLayer.BusinessObjects.Errors.Errors
 {
