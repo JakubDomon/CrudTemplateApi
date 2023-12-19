@@ -1,7 +1,7 @@
-﻿using BusinessLayer.BusinessObjects.Communication.Enums;
+﻿using BusinessLayer.BusinessObjects.Communication.API.Enums;
 using BusinessLayer.BusinessObjects.Errors.Errors;
 
-namespace BusinessLayer.BusinessObjects.Communication
+namespace BusinessLayer.BusinessObjects.Communication.API
 {
     public class ErrorableResponse<T>
     {

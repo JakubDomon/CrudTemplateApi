@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.BusinessObjects.BusinessObjects;
-using BusinessLayer.BusinessObjects.Communication;
+using BusinessLayer.BusinessObjects.Communication.API;
 
 namespace BusinessLayer.Service.CrudService
 {

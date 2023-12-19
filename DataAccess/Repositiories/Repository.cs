@@ -1,8 +1,10 @@
 ﻿using DataAccessLayer.DbContexts;
 using DataAccessLayer.Models;
+using OpRes = DataAccessLayer.Models.OperationResult;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
+using DataAccessLayer.Models.OperationResult;
 
 namespace DataAccessLayer.Repositiories
 {
@@ -19,14 +21,22 @@ namespace DataAccessLayer.Repositiories
             Table = dbContext.Set<Entity>();
         }
 
-        public void Add(Entity entity)
+        public OpRes.OperationResult<Entity> Add(Entity entity)
         {
             entity.AddDate = DateTime.Now;
             entity.UpdateDate = DateTime.Now;
             Table.Add(entity);
+
+            return new OperationResult<Entity>()
+            {
+                Object = entity,
+                Status = SaveChanges()
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.Fail
+            };
         }
 
-        public void Update(Entity entity)
+        public OpRes.OperationResult<Entity> Update(Entity entity)
         {
             Entity existingEntity = Table.FirstOrDefault(x => x.Id == entity.Id) ?? throw new ArgumentException($"Entity with {entity.Id} not exists");
             existingEntity.UpdateDate = DateTime.Now;
@@ -43,12 +53,78 @@ namespace DataAccessLayer.Repositiories
                 }
             }
             Table.Update(existingEntity);
+
+            return new OperationResult<Entity>()
+            {
+                Object = existingEntity,
+                Status = SaveChanges()
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.Fail
+            };
         }
 
-        public IEnumerable<Entity> GetManyByCondition(Expression<Func<Entity, bool>> expression) => Table.Where(expression).ToList();
-        public IEnumerable<Entity> GetAll() => Table.OrderBy(x => x.Id).ToList();
-        public Entity? GetById(int id) => Table.SingleOrDefault(x => x.Id == id);
-        public void Delete(Entity entity) => Table.Remove(Table.Find(entity.Id) ?? throw new ArgumentException($"Entity with ID: {entity.Id} not found in database"));
-        public bool SaveChanges() => Context.SaveChanges() > 0;
+        public OpRes.OperationResult<IEnumerable<Entity>> GetManyByCondition(Expression<Func<Entity, bool>> expression)
+        {
+            var items =Table.Where(expression).ToList();
+
+            return new OperationResult<IEnumerable<Entity>>()
+            {
+                Object = items,
+                Status = items.Count > 0
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.NotFound
+            };
+
+        }
+
+        public OpRes.OperationResult<IEnumerable<Entity>> GetAll()
+        {
+            var items = Table.OrderBy(x => x.Id).ToList();
+
+            return new OperationResult<IEnumerable<Entity>>()
+            {
+                Object = items,
+                Status = items.Count > 0
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.NotFound
+            };
+        }
+
+        public OpRes.OperationResult<Entity> GetById(int id)
+        {
+            var item = Table.SingleOrDefault(x => x.Id == id);
+
+            return new OperationResult<Entity>()
+            {
+                Object = item,
+                Status = item != null
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.NotFound
+            };
+        }
+
+        public OpRes.OperationResult<Entity> Delete(Entity entity)
+        {
+            Table.Remove(Table.Find(entity.Id) ?? throw new ArgumentException($"Entity with ID: {entity.Id} not found in database"));
+
+            return new OperationResult<Entity>()
+            {
+                Object = null,
+                Status = Table.Find(entity.Id) == null
+                    ? OpRes.Enums.OperationStatus.Success
+                    : OpRes.Enums.OperationStatus.Fail
+            };
+        }
+
+        private bool SaveChanges() => Context.SaveChanges() > 0;
+
+        private OpRes.OperationResult<Entity> CreateOperationStatus(OpRes.Enums.OperationStatus status, Entity? entity)
+        {
+            return new OpRes.OperationResult<Entity>()
+            {
+                Object = entity,
+                Status = status
+            };
+        }
     }
 }

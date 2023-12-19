@@ -1,6 +1,5 @@
 ﻿using Dal = DataAccessLayer.Models;
 using DataAccessLayer.Repositiories;
-using BusinessLayer.BusinessObjects.Communication;
 using BusinessLayer.BusinessObjects.BusinessObjects.Users;
 using BusinessLayer.BusinessObjects.BusinessObjects.Security.Login;
 using BusinessLayer.Validators.SpecificValidators.Security;
@@ -15,6 +14,8 @@ using System.IdentityModel.Tokens.Jwt;
 using AutoMapper.Internal.Mappers;
 using BusinessLayer.Helpers.MapperObjectFiller;
 using BusinessLayer.Helpers.MapperObjectFiller.SpecificObjectFillers;
+using BusinessLayer.BusinessObjects.Communication.API;
+using BusinessLayer.BusinessObjects.Communication.Repository;
 
 namespace BusinessLayer.BusinessLogic.Security
 {
@@ -79,13 +80,9 @@ namespace BusinessLayer.BusinessLogic.Security
 
             try
             {
-                Repository.Update(Mapper.Map<Dal.Users.User>(user));
-                if (Repository.SaveChanges())
-                {
-                    return CreateSuccessEmptyResponse<User>();
-                };
-
-                return CreateDatabaseErrorResponse<User>();
+                var result = Mapper.Map<OperationResult<User>>(Repository.Update(Mapper.Map<Dal.Users.User>(user)));
+                
+                return CreateResponseFromOperationResult(result);
             }
             catch(Exception ex)
             {

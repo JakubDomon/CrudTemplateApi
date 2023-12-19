@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.BusinessObjects.Communication.Enums
+﻿namespace BusinessLayer.BusinessObjects.Communication.API.Enums
 {
     public enum ResponseStatus
     {

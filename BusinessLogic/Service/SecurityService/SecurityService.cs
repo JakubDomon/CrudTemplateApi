@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.BusinessLogic.Security;
 using BusinessLayer.BusinessObjects.BusinessObjects.Security.Login;
 using BusinessLayer.BusinessObjects.BusinessObjects.Users;
-using BusinessLayer.BusinessObjects.Communication;
+using BusinessLayer.BusinessObjects.Communication.API;
 using BusinessLayer.Service.AuthService;
 
 namespace BusinessLayer.Service.SecurityService

@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.BusinessObjects.BusinessObjects;
-using BusinessLayer.BusinessObjects.Communication;
 using BusinessLayer.BusinessObjects.Errors.Errors;
 using Am = BusinessLayer.Converters.AutoMapper;
 using DataAccessLayer.Models;
@@ -7,6 +6,7 @@ using DataAccessLayer.Repositiories;
 using AutoMapper;
 using BusinessLayer.Validators.SpecificValidators.Crud;
 using BusinessLayer.Helpers.MapperObjectFiller;
+using BusinessLayer.BusinessObjects.Communication.API;
 
 namespace BusinessLayer.BusinessLogic.Crud
 {

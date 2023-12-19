@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dal = DataAccessLayer.Models;
 using Bo = BusinessLayer.BusinessObjects.BusinessObjects;
+using Com = BusinessLayer.BusinessObjects.Communication;
 
 namespace BusinessLayer.Converters.AutoMapper
 {
@@ -10,6 +11,7 @@ namespace BusinessLayer.Converters.AutoMapper
         {
             MapUserObjects();
             MapUserGroupsObjects();
+            MapOperationResult();
         }
 
         private void MapUserObjects()
@@ -22,6 +24,11 @@ namespace BusinessLayer.Converters.AutoMapper
         {
             CreateMap<Bo.UserGroups.UserGroup, Dal.UserGroups.UserGroup>();
             CreateMap<Dal.UserGroups.UserGroup, Bo.UserGroups.UserGroup>();
+        }
+
+        private void MapOperationResult()
+        {
+            CreateMap(typeof(Com.Repository.OperationResult<>), typeof(Dal.OperationResult.OperationResult<>));
         }
     }
 }

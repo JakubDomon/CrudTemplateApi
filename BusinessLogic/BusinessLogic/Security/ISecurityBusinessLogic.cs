@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.BusinessObjects.BusinessObjects.Security.Login;
 using BusinessLayer.BusinessObjects.BusinessObjects.Users;
-using BusinessLayer.BusinessObjects.Communication;
+using BusinessLayer.BusinessObjects.Communication.API;
 
 namespace BusinessLayer.BusinessLogic.Security
 {

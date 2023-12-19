@@ -1,8 +1,8 @@
-﻿using BusinessLayer.BusinessObjects.Communication.Enums;
-using BusinessLayer.BusinessObjects.Communication;
-using BusinessLayer.BusinessObjects.Errors.Errors;
-using System.Net;
+﻿using BusinessLayer.BusinessObjects.Errors.Errors;
 using BusinessLayer.BusinessObjects.Errors.ErrorCodes;
+using BusinessLayer.BusinessObjects.Communication.API.Enums;
+using BusinessLayer.BusinessObjects.Communication.API;
+using BusinessLayer.BusinessObjects.Communication.Repository;
 
 namespace BusinessLayer.BusinessLogic
 {
@@ -61,6 +61,23 @@ namespace BusinessLayer.BusinessLogic
                 },
                 Status = ResponseStatus.Failure,
                 Response = default
+            };
+        }
+
+        protected ErrorableResponse<T> CreateResponseFromOperationResult<T>(OperationResult<T> operationRes)
+        {
+            return new ErrorableResponse<T>
+            {
+                Errors = operationRes.Status == BusinessObjects.Communication.Repository.Enums.OperationStatus.Fail
+                    ? new List<Error>()
+                        {
+                            new Error(CommonErrorCodes.DatabaseError),
+                        }
+                    : default,
+                Status = operationRes.Status == BusinessObjects.Communication.Repository.Enums.OperationStatus.Success
+                    ? ResponseStatus.Success
+                    : ResponseStatus.Failure,
+                Response = operationRes.Object
             };
         }
     }
