@@ -13,6 +13,6 @@ namespace CrudTemplateApi.Communication.GuiObjects.Users
         public DateTime? AddDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         
-        public IEnumerable<int>? GroupIds { get; set; }
+        public IEnumerable<int>? Groups { get; set; }
     }
 }

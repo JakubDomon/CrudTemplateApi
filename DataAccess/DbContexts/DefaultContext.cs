@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.DbContexts.Enums;
 using DataAccessLayer.Models.UserGroups;
 using DataAccessLayer.Models.Users;
+using DataAccessLayer.Utils.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -22,7 +23,7 @@ namespace DataAccessLayer.DbContexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(GetConnectionString(DatabaseTypes.MsSQL_Mikrus.ToString()));
+            optionsBuilder.UseSqlServer(GetConnectionString(DatabaseTypes.MsSQL_Mikrus.GetStringValue()));
         }
     }
 }

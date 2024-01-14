@@ -3,6 +3,6 @@
     public class UserGroup : IGuiModel
     {
         public int Id { get; set; }
-        public IEnumerable<int>? UsersIds { get; set; }
+        public IEnumerable<int>? Users { get; set; }
     }
 }

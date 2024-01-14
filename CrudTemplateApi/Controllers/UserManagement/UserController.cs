@@ -8,11 +8,11 @@ using BillWebApi.Communication.Enums;
 using CrudTemplateApi.Communication.GuiObjects;
 using BusinessLayer.Service.AuthService;
 
-namespace CrudTemplateApi.Controllers
+namespace CrudTemplateApi.Controllers.UserManagement
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private ISecurityService SecurityService;
         private IMapper Mapper { get; set; }
@@ -53,18 +53,6 @@ namespace CrudTemplateApi.Controllers
         {
             ErrorableResponse<Gui.Users.User> response = Mapper.Map<ErrorableResponse<Gui.Users.User>>(SecurityService.DeleteUser(Mapper.Map<Bo.Users.User>(user)));
             return CreateHttpResponse(response);
-        }
-
-
-        private IResult CreateHttpResponse<T>(ErrorableResponse<T> response)
-            where T: IGuiModel
-        {
-            return response.Status switch
-            {
-                ResponseStatus.Success => Results.Ok(response),
-                ResponseStatus.Failure => Results.StatusCode(500),
-                _ => Results.StatusCode(500)
-            };
         }
     }
 }

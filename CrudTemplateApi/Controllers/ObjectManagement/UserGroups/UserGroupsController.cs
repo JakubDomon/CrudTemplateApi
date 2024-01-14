@@ -11,11 +11,11 @@ using CrudTemplateApi.Communication;
 using CrudTemplateApi.Communication.GuiObjects;
 using BillWebApi.Communication.Enums;
 
-namespace CrudTemplateApi.Controllers
+namespace CrudTemplateApi.Controllers.ObjectManagement.UserGroups
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserGroupsController : ControllerBase
+    public class UserGroupsController : BaseController
     {
         private ICrudService<UserGroup> CrudService { get; set; }
         private IMapper Mapper { get; set; }
@@ -31,18 +31,7 @@ namespace CrudTemplateApi.Controllers
         public IResult RegisterUser(Gui.UserGroups.UserGroup userGroup)
         {
             ErrorableResponse<Gui.UserGroups.UserGroup> response = Mapper.Map<ErrorableResponse<Gui.UserGroups.UserGroup>>(CrudService.Add(Mapper.Map<UserGroup>(userGroup)));
-            return CreateHttpResponse(response);
-        }
-
-        private IResult CreateHttpResponse<T>(ErrorableResponse<T> response)
-            where T : IGuiModel
-        {
-            return response.Status switch
-            {
-                ResponseStatus.Success => Results.Ok(response),
-                ResponseStatus.Failure => Results.StatusCode(500),
-                _ => Results.StatusCode(500)
-            };
+            return CreateHttpResponse<Gui.UserGroups.UserGroup>(response);
         }
     }
 }

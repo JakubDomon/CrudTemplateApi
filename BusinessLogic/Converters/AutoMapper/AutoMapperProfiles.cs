@@ -9,9 +9,9 @@ namespace BusinessLayer.Converters.AutoMapper
     {
         public AutoMapperProfiles()
         {
+            MapOperationResult();
             MapUserObjects();
             MapUserGroupsObjects();
-            MapOperationResult();
         }
 
         private void MapUserObjects()
@@ -29,6 +29,7 @@ namespace BusinessLayer.Converters.AutoMapper
         private void MapOperationResult()
         {
             CreateMap(typeof(Com.Repository.OperationResult<>), typeof(Dal.OperationResult.OperationResult<>));
+            CreateMap(typeof(Dal.OperationResult.OperationResult<>), typeof(Com.Repository.OperationResult<>));
         }
     }
 }

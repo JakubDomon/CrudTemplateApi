@@ -49,7 +49,7 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         private IEnumerable<Error> CheckCompulsoryValsUserRegister(Bo.Users.User user)
         {
-            if(Repository.GetManyByCondition(x => x.Login == user.Login).Any())
+            if(Repository.GetManyByCondition(x => x.Login == user.Login).Object.Any())
             {
                 yield return CreateError(SecurityErrorCodes.UserLoginAlreadyExists);
                 yield break;
@@ -79,7 +79,7 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         public IEnumerable<Error> ValidateUserUpdate(User user)
         {
-            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Any())
+            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Object.Any())
             {
                 yield return CreateError(SecurityErrorCodes.UserNotExists);
                 yield break;
@@ -93,7 +93,7 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         public IEnumerable<Error> ValidateUserDelete(User user)
         {
-            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Any())
+            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Object.Any())
             {
                 yield return CreateError(SecurityErrorCodes.UserNotExists);
             }

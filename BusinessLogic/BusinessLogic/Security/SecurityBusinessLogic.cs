@@ -47,22 +47,10 @@ namespace BusinessLayer.BusinessLogic.Security
 
             try
             {
-                if(user != null && user?.Password != null)
-                {
-                    user.Password = EncryptPassword(user.Password);
+                user.Password = EncryptPassword(user.Password);
 
-                    Repository.Add(Mapper.Map<Dal.Users.User>(user));
-                    if (Repository.SaveChanges()) 
-                    {
-                        return CreateSuccessEmptyResponse<User>();
-                    };
-
-                    return CreateDatabaseErrorResponse<User>();
-                }
-                else
-                {
-                    return CreateErrorResponseException<User>();
-                }
+                var result = Mapper.Map<OperationResult<User>>(Repository.Add(Mapper.Map<Dal.Users.User>(user)));
+                return CreateResponseFromOperationResult<User>(result);
             }
             catch (Exception ex)
             {
@@ -81,7 +69,6 @@ namespace BusinessLayer.BusinessLogic.Security
             try
             {
                 var result = Mapper.Map<OperationResult<User>>(Repository.Update(Mapper.Map<Dal.Users.User>(user)));
-                
                 return CreateResponseFromOperationResult(result);
             }
             catch(Exception ex)
@@ -100,13 +87,8 @@ namespace BusinessLayer.BusinessLogic.Security
 
             try
             {
-                Repository.Delete(Mapper.Map<Dal.Users.User>(user));
-                if (Repository.SaveChanges())
-                {
-                    return CreateSuccessEmptyResponse<User>();
-                };
-
-                return CreateDatabaseErrorResponse<User>();
+                var result = Mapper.Map<OperationResult<User>>(Repository.Delete(Mapper.Map<Dal.Users.User>(user)));
+                return CreateResponseFromOperationResult(result);
             }
             catch
             {
@@ -124,7 +106,7 @@ namespace BusinessLayer.BusinessLogic.Security
 
             try
             {
-                User user = Mapper.Map<User>(Repository.GetManyByCondition(x => x.Login == userLoginRequest.Login).ToList()[0]);
+                User user = Mapper.Map<User>(Repository.GetManyByCondition(x => x.Login == userLoginRequest.Login).Object.ToList()[0]);
 
                 if(VerifyUserPassword(user, userLoginRequest))
                 {

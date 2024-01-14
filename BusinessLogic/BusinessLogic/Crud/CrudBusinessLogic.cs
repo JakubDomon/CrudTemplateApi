@@ -7,6 +7,7 @@ using AutoMapper;
 using BusinessLayer.Validators.SpecificValidators.Crud;
 using BusinessLayer.Helpers.MapperObjectFiller;
 using BusinessLayer.BusinessObjects.Communication.API;
+using BusinessLayer.BusinessObjects.Communication.Repository;
 
 namespace BusinessLayer.BusinessLogic.Crud
 {
@@ -49,7 +50,7 @@ namespace BusinessLayer.BusinessLogic.Crud
 
             try
             {
-                Item item = Mapper.Map<Entity, Item>(Repository.GetById(id));
+                Item? item = Mapper.Map<Entity, Item>(Repository.GetById(id)?.Object);
 
                 if (item == null)
                 {
@@ -82,15 +83,8 @@ namespace BusinessLayer.BusinessLogic.Crud
 
             try
             {
-                Repository.Add(Mapper.Map<Entity>(item));
-                if (Repository.SaveChanges())
-                {
-                    return CreateSuccessEmptyResponse<Item>();
-                }
-                else
-                {
-                    return CreateDatabaseErrorResponse<Item>();
-                }
+                var result = Mapper.Map<OperationResult<Item>>(Repository.Add(Mapper.Map<Entity>(item)));
+                return CreateResponseFromOperationResult(result);
             }
             catch (Exception ex)
             {
@@ -109,15 +103,8 @@ namespace BusinessLayer.BusinessLogic.Crud
 
             try
             {
-                Repository.Update(Mapper.Map<Entity>(item));
-                if (Repository.SaveChanges())
-                {
-                    return CreateSuccessEmptyResponse<Item>();
-                }
-                else
-                {
-                    return CreateDatabaseErrorResponse<Item>();
-                }
+                var result = Mapper.Map<OperationResult<Item>>(Repository.Update(Mapper.Map<Entity>(item)));
+                return CreateResponseFromOperationResult(result);
             }
             catch(Exception ex)
             {
@@ -135,15 +122,8 @@ namespace BusinessLayer.BusinessLogic.Crud
 
             try
             {
-                Repository.Delete(Mapper.Map<Entity>(item));
-                if (Repository.SaveChanges())
-                {
-                    return CreateSuccessEmptyResponse<Item>();
-                }
-                else
-                {
-                    return CreateDatabaseErrorResponse<Item>();
-                }
+                var result = Mapper.Map<OperationResult<Item>>(Repository.Delete(Mapper.Map<Entity>(item)));
+                return CreateResponseFromOperationResult(result);
             }
             catch (Exception ex)
             {
