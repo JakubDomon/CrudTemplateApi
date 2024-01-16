@@ -7,7 +7,7 @@ using DataAccessLayer.Repositiories;
 namespace BusinessLayer.Helpers.MapperObjectFiller
 {
     internal abstract class MapperObjectFillerBase<Item, Entity> : IMapperObjectFiller<Item>
-        where Item : BusinessModelBase
+        where Item : IBusinessModel
     {
         protected IMapper Mapper { get; set; }
 

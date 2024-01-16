@@ -1,28 +1,33 @@
 ﻿using Dal = DataAccessLayer.Models;
 using Bo = BusinessLayer.BusinessObjects.BusinessObjects;
 using DataAccessLayer.Repositiories;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace BusinessLayer.Helpers.MapperObjectFiller.SpecificObjectFillers
 {
     internal class UserGroupObjectFiller : MapperObjectFillerBase<Bo.UserGroups.UserGroup, Dal.UserGroups.UserGroup>
     {
-        private IRepository<Dal.Users.User> UserRepository { get; set; }
+        private UserManager<Dal.Users.User> _userManager { get; set; }
 
-        public UserGroupObjectFiller(IRepository<Dal.Users.User> userRepository)
+        public UserGroupObjectFiller(UserManager<Dal.Users.User> userRepository)
         {
-            UserRepository = userRepository;
+            _userManager = userRepository;
         }
 
         public override Bo.UserGroups.UserGroup Fill(Bo.UserGroups.UserGroup group)
         {
             if(group.Users?.Any() ?? false)
             {
-                group.Users = FillUsers(group.Users.Select(u => u.Id ?? throw new ArgumentException()));
+                group.Users = FillUsers(group.Users.Select(u => u.Id));
             }
 
             return group;
         }
 
-        private IEnumerable<Bo.Users.User> FillUsers(IEnumerable<int> ids) => Mapper.Map<IEnumerable<Bo.Users.User>>(UserRepository.GetManyByCondition(x => ids.Contains(x.Id)));
+        private IEnumerable<Bo.Users.User> FillUsers(IEnumerable<int> ids) 
+        {
+            return Mapper.Map<IEnumerable<Bo.Users.User>>(_userManager.Users.Where(u => ids.Contains(u.Id)));
+        }
     }
 }

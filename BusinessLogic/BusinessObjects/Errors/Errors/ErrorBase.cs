@@ -5,12 +5,20 @@ namespace BusinessLayer.BusinessObjects.Errors.Errors
 {
     public abstract class ErrorBase : IError
     {
-        public string Message { get; }
+        public string _message { get; }
+        string IError.Message { get => _message; }
 
-        public ErrorBase(string errorKey)
+        public ErrorBase(string errorCode, bool isCustom)
         {
-            ResourceHelper<ErrorData> resourceHelper = new();
-            Message = resourceHelper.GetValue(errorKey) ?? throw new ArgumentException("Invalid error key argument", nameof(errorKey));
+            if (isCustom)
+            {
+                _message = errorCode;
+            }
+            else
+            {
+                ResourceHelper<ErrorData> resourceHelper = new();
+                _message = resourceHelper.GetValue(errorCode) ?? throw new ArgumentException("Invalid error key argument", nameof(errorCode));
+            }
         }
     }
 }

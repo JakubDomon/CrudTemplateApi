@@ -10,7 +10,7 @@ namespace BusinessLayer.Validators.SpecificValidators
     {
         protected ValidatorBase() { }
 
-        protected Error CreateError(string errorKey) => new(errorKey);
+        protected Error CreateError(string errorKey) => new(errorKey, false);
 
         public IEnumerable<Error> ValidateObjectHasAnyPropertyValues(T item)
         {

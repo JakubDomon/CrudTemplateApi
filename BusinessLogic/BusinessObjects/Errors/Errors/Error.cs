@@ -2,6 +2,9 @@
 {
     public class Error : ErrorBase
     {
-        public Error(string errorCode) : base(errorCode) { }
+        public Error(string errorCode, bool isCustom) : base(errorCode, isCustom)
+        {
+
+        }
     }
 }

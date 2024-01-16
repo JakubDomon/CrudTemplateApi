@@ -3,7 +3,7 @@
 namespace BusinessLayer.Helpers.MapperObjectFiller
 {
     internal interface IMapperObjectFiller<Item>
-        where Item : BusinessModelBase
+        where Item : IBusinessModel
     {
         public Item Fill(Item item);
     }

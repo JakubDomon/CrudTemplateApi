@@ -1,56 +1,43 @@
 ﻿using Dal = DataAccessLayer.Models;
-using DataAccessLayer.Repositiories;
 using BusinessLayer.BusinessObjects.BusinessObjects.Users;
 using BusinessLayer.BusinessObjects.BusinessObjects.Security.Login;
 using BusinessLayer.Validators.SpecificValidators.Security;
 using AutoMapper;
 using Am = BusinessLayer.Converters.AutoMapper;
 using BusinessLayer.BusinessObjects.Errors.Errors;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using AutoMapper.Internal.Mappers;
-using BusinessLayer.Helpers.MapperObjectFiller;
-using BusinessLayer.Helpers.MapperObjectFiller.SpecificObjectFillers;
 using BusinessLayer.BusinessObjects.Communication.API;
-using BusinessLayer.BusinessObjects.Communication.Repository;
+using Microsoft.AspNetCore.Identity;
+using BusinessLayer.Converters.UserManager;
 
 namespace BusinessLayer.BusinessLogic.Security
 {
     internal class SecurityBusinessLogic : BusinessLogicBase, ISecurityBusinessLogic
     {
-        private IRepository<Dal.Users.User> Repository { get; }
-        private ISecurityValidator SecurityValidator { get; }
-        private IMapper Mapper { get; }
-        private IConfiguration Configuration { get; }
-        private IMapperObjectFiller<User> UserObjectFiller { get; }
+        private ISecurityValidator _securityValidator { get; }
+        private IMapper _mapper { get; }
+        private UserManager<Dal.Users.User> _userManager { get; }
 
-        public SecurityBusinessLogic(IRepository<Dal.Users.User> repository, ISecurityValidator validator, IConfiguration configuration, IMapperObjectFiller<User> userObjectFiller)
+        public SecurityBusinessLogic(ISecurityValidator validator, UserManager<Dal.Users.User> userManager)
         {
-            Repository = repository;
-            SecurityValidator = validator;
-            Mapper = Am.AutoMapper.Mapper;
-            Configuration = configuration;
-            UserObjectFiller = userObjectFiller;
+            _securityValidator = validator;
+            _mapper = Am.AutoMapper.Mapper;
+            _userManager = userManager;
         }
 
         public ErrorableResponse<User> RegisterUser(User user)
         {
-            IEnumerable<Error> errors = SecurityValidator.ValidateUserRegister(user);
+            IEnumerable<Error> errors = _securityValidator.ValidateUserRegister(user);
             if (errors.Any())
             {
                 return CreateErrorResponse<User>(errors);
             }
-            user = UserObjectFiller.Fill(user);
 
             try
             {
-                user.Password = EncryptPassword(user.Password);
+                var result = _userManager.CreateAsync(_mapper.Map<Dal.Users.User>(user), user.Password);
 
-                var result = Mapper.Map<OperationResult<User>>(Repository.Add(Mapper.Map<Dal.Users.User>(user)));
-                return CreateResponseFromOperationResult<User>(result);
+                result.Wait();
+                return IdentityResultConverter.ConvertResultToErrorableResponse<User>(result.Result, user);
             }
             catch (Exception ex)
             {
@@ -60,107 +47,17 @@ namespace BusinessLayer.BusinessLogic.Security
 
         public ErrorableResponse<User> UpdateUser(User user)
         {
-            IEnumerable<Error> errors = SecurityValidator.ValidateUserUpdate(user);
-            if (errors.Any())
-            {
-                return CreateErrorResponse<User>(errors);
-            }
-
-            try
-            {
-                var result = Mapper.Map<OperationResult<User>>(Repository.Update(Mapper.Map<Dal.Users.User>(user)));
-                return CreateResponseFromOperationResult(result);
-            }
-            catch(Exception ex)
-            {
-                return CreateErrorResponseException<User>();
-            }
+            throw new NotImplementedException();
         }
 
         public ErrorableResponse<User> DeleteUser(User user)
         {
-            IEnumerable<Error> errors = SecurityValidator.ValidateUserDelete(user);
-            if (errors.Any())
-            {
-                return CreateErrorResponse<User>(errors);
-            }
-
-            try
-            {
-                var result = Mapper.Map<OperationResult<User>>(Repository.Delete(Mapper.Map<Dal.Users.User>(user)));
-                return CreateResponseFromOperationResult(result);
-            }
-            catch
-            {
-                return CreateErrorResponseException<User>();
-            }
+            throw new NotImplementedException();
         }
 
         public ErrorableResponse<LoginResponse> LoginUser(LoginRequest userLoginRequest)
         {
-            IEnumerable<Error> errors = SecurityValidator.ValidateUserLogin(userLoginRequest);
-            if(errors.Any())
-            {
-                return CreateErrorResponse<LoginResponse>(errors);
-            }
-
-            try
-            {
-                User user = Mapper.Map<User>(Repository.GetManyByCondition(x => x.Login == userLoginRequest.Login).Object.ToList()[0]);
-
-                if(VerifyUserPassword(user, userLoginRequest))
-                {
-                    IConfigurationSection jwtConfigSection = Configuration.GetSection("JWT") ?? throw new ArgumentNullException();
-
-                    byte[] key = Encoding.ASCII.GetBytes(jwtConfigSection["Key"] ?? throw new ArgumentNullException());
-
-                    SecurityTokenDescriptor tokenDescriptor = new()
-                    {
-                        Subject = new ClaimsIdentity(new[]
-                        {
-                            new Claim(ClaimTypes.Name, user.Id.ToString()),
-                            new Claim(ClaimTypes.GivenName, user.Name),
-                            new Claim(ClaimTypes.Surname, user.Surname),
-                            new Claim(JwtRegisteredClaimNames.Aud, jwtConfigSection["Audience"] ?? throw new ArgumentNullException()),
-                            new Claim(JwtRegisteredClaimNames.Aud, jwtConfigSection["Issuer"] ?? throw new ArgumentNullException())
-                        }),
-                        Expires = DateTime.UtcNow.AddMinutes(10),
-                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                    };
-
-                    JwtSecurityTokenHandler tokenHandler = new();
-
-                    return CreateSuccessResponse(new LoginResponse()
-                    {
-                        Token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)),
-                        User = user,
-                    });
-                }
-
-                // Change this code to HTTP status enum
-                return CreateErrorResponseException<LoginResponse>();
-            }
-            catch(Exception ex)
-            {
-                return CreateErrorResponseException<LoginResponse>();
-            }
-        }
-
-        private string EncryptPassword(string password) => BCrypt.Net.BCrypt.HashPassword(password);
-
-        private bool VerifyUserPassword(User? user, LoginRequest loginRequest)
-        {
-            if(user == null)
-            {
-                return false;
-            }
-
-            if(BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password))
-            {
-                return true;
-            }
-
-            return false;
+            throw new NotImplementedException();
         }
     }
 }

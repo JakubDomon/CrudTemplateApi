@@ -1,6 +1,4 @@
-﻿using Dal = DataAccessLayer.Models;
-using DataAccessLayer.Repositiories;
-using BusinessLayer.BusinessObjects.Errors.Errors;
+﻿using BusinessLayer.BusinessObjects.Errors.Errors;
 using Bo = BusinessLayer.BusinessObjects.BusinessObjects;
 using BusinessLayer.BusinessObjects.Errors.ErrorCodes;
 using BusinessLayer.BusinessObjects.BusinessObjects.Users;
@@ -9,12 +7,7 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 {
     internal class SecurityValidator : ValidatorBase<User>, ISecurityValidator
     {
-        private readonly IRepository<Dal.Users.User> Repository;
-
-        public SecurityValidator(IRepository<Dal.Users.User> repository)
-        {
-            Repository = repository;
-        }
+        public SecurityValidator() { }
 
         public IEnumerable<Error> ValidateUserRegister(Bo.Users.User user)
         {
@@ -49,21 +42,15 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         private IEnumerable<Error> CheckCompulsoryValsUserRegister(Bo.Users.User user)
         {
-            if(Repository.GetManyByCondition(x => x.Login == user.Login).Object.Any())
-            {
-                yield return CreateError(SecurityErrorCodes.UserLoginAlreadyExists);
-                yield break;
-            }
-
-            if(user.Login == null)
+            if(user.UserName == null)
             {
                 yield return CreateError(SecurityErrorCodes.UserLoginRequired);
             }
-            if(user.Name == null)
+            if(user.FirstName == null)
             {
                 yield return CreateError(SecurityErrorCodes.UserNameRequired);
             }
-            if(user.Surname == null)
+            if(user.LastName == null)
             {
                 yield return CreateError(SecurityErrorCodes.UserSurnameRequired);
             }
@@ -79,11 +66,6 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         public IEnumerable<Error> ValidateUserUpdate(User user)
         {
-            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Object.Any())
-            {
-                yield return CreateError(SecurityErrorCodes.UserNotExists);
-                yield break;
-            }
             foreach(Error error in ValidateObjectHasAnyPropertyValues(user))
             {
                 yield return error;
@@ -93,10 +75,7 @@ namespace BusinessLayer.Validators.SpecificValidators.Security
 
         public IEnumerable<Error> ValidateUserDelete(User user)
         {
-            if(!Repository.GetManyByCondition(x => x.Id == user.Id).Object.Any())
-            {
-                yield return CreateError(SecurityErrorCodes.UserNotExists);
-            }
+            yield break;
         }
 
         public IEnumerable<Error> ValidateQuery(User user)

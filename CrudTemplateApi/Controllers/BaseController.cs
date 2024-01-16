@@ -1,5 +1,5 @@
-﻿using BusinessLayer.BusinessObjects.Communication.API;
-using BusinessLayer.BusinessObjects.Communication.API.Enums;
+﻿using BillWebApi.Communication.Enums;
+using CrudTemplateApi.Communication;
 using CrudTemplateApi.Communication.GuiObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

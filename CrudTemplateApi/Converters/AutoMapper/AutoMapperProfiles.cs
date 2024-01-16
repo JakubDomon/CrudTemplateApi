@@ -23,9 +23,9 @@ namespace CrudTemplateApi.Converters.AutoMapper
         private void MapUserObjects()
         {
             CreateMap<Go.Users.User, Bo.Users.User>()
-                .ForMember(dest => dest.Groups, opt => opt.MapFrom(src => CreateBoObjectsList<Bo.UserGroups.UserGroup>(src.GroupIds)));
+                .ForMember(dest => dest.Groups, opt => opt.MapFrom(src => CreateBoObjectsList<Bo.UserGroups.UserGroup>(src.Groups)));
             CreateMap<Bo.Users.User, Go.Users.User>()
-                .ForMember(dest => dest.GroupIds, opt => opt.MapFrom(src => CreateGuiObjectIdList<Bo.UserGroups.UserGroup>(src.Groups)));
+                .ForMember(dest => dest.Groups, opt => opt.MapFrom(src => CreateGuiObjectIdList<Bo.UserGroups.UserGroup>(src.Groups)));
         }
 
         private void MapSecurityObjects()
@@ -43,9 +43,9 @@ namespace CrudTemplateApi.Converters.AutoMapper
         private void MapUserGroups()
         {
             CreateMap<Go.UserGroups.UserGroup, Bo.UserGroups.UserGroup>()
-                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => CreateBoObjectsList<Bo.Users.User>(src.UsersIds)));
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => CreateBoObjectsList<Bo.Users.User>(src.Users)));
             CreateMap<Bo.UserGroups.UserGroup, Go.UserGroups.UserGroup>()
-                .ForMember(dest => dest.UsersIds, opt => opt.MapFrom(src => CreateGuiObjectIdList<Bo.Users.User>(src.Users)));
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => CreateGuiObjectIdList<Bo.Users.User>(src.Users)));
         }
 
         private IEnumerable<T> CreateBoObjectsList<T>(IEnumerable<int>? ids)

@@ -22,10 +22,6 @@ namespace BusinessLayer.DependencyInjection
             services.AddTransient<ISecurityValidator, SecurityValidator>();
             services.AddTransient<ICrudValidator<Bo.UserGroups.UserGroup>, UserGroupValidator>();
 
-            // Object mappers
-            services.AddTransient<IMapperObjectFiller<Bo.Users.User>, UserObjectFiller>();
-            services.AddTransient<IMapperObjectFiller<Bo.UserGroups.UserGroup>, UserGroupObjectFiller>();
-
             // Business logics
             services.AddTransient<ISecurityBusinessLogic, SecurityBusinessLogic>();
             services.AddTransient<ICrudBusinessLogic<Bo.UserGroups.UserGroup>, CrudBusinessLogic<Bo.UserGroups.UserGroup, Dal.UserGroups.UserGroup>>();

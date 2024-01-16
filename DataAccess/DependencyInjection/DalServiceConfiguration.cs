@@ -13,8 +13,11 @@ namespace DataAccessLayer.DependencyInjection
             // Database context
             services.AddDbContext<DefaultContext>();
 
+            // Identity configuration
+            services.AddIdentityCore<User>()
+                .AddEntityFrameworkStores<DefaultContext>();
+
             // Repositories
-            services.AddTransient<IRepository<User>, Repository<User, DefaultContext>>();
             services.AddTransient<IRepository<UserGroup>, Repository<UserGroup, DefaultContext>>();
 
             return services;

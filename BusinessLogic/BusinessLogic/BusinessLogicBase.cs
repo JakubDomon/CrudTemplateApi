@@ -44,7 +44,7 @@ namespace BusinessLayer.BusinessLogic
             {
                 Errors = new List<Error>()
                 {
-                    new Error(CommonErrorCodes.ServerError),
+                    new Error(CommonErrorCodes.ServerError, false),
                 },
                 Status = ResponseStatus.Failure,
                 Response = default
@@ -57,7 +57,7 @@ namespace BusinessLayer.BusinessLogic
             {
                 Errors = new List<Error>()
                 {
-                    new Error(CommonErrorCodes.DatabaseError),
+                    new Error(CommonErrorCodes.DatabaseError, false),
                 },
                 Status = ResponseStatus.Failure,
                 Response = default
@@ -71,7 +71,7 @@ namespace BusinessLayer.BusinessLogic
                 Errors = operationRes.Status == BusinessObjects.Communication.Repository.Enums.OperationStatus.Fail
                     ? new List<Error>()
                         {
-                            new Error(CommonErrorCodes.DatabaseError),
+                            new Error(CommonErrorCodes.DatabaseError, false),
                         }
                     : default,
                 Status = operationRes.Status == BusinessObjects.Communication.Repository.Enums.OperationStatus.Success

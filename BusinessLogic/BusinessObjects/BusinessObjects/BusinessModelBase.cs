@@ -1,6 +1,6 @@
 ﻿namespace BusinessLayer.BusinessObjects.BusinessObjects
 {
-    public class BusinessModelBase
+    public class BusinessModelBase : IBusinessModel
     {
         public int? Id { get; set; }
         public DateTime? AddDate { get; set; }
